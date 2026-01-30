@@ -1,0 +1,43 @@
+/* 19. JS. DOM. TodoList */
+
+body {
+    box-sizing: border-box;
+    padding: 40px;
+}
+
+#task-list {
+    margin: 30px 0;
+}
+
+.list-item {
+    border: 1px solid #71797E;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    max-width: 750px;
+}
+
+.content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: 15px;
+    padding: 15px;
+}
+
+.item-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    flex-basis: 70%;
+    min-width: 0;
+}
+
+.delete-btn {
+    width: 76px;
+    height: 30px;
+}
+
+.done {
+    color: #B2BEB5;
+    text-decoration: line-through;
+}

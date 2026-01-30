@@ -2,71 +2,95 @@
 // -------------------------------------------------------------------------------------------------------------------------------
 
 
-// 18. JS. DOM. Події
+// 19. JS. DOM. TodoList
 
-// 1. Прописати у html-розмітці кнопку (<button>) з будь-яким селектором (класс, id). 
-// За допомогою DOM отримати посилання на цей елемент та навісити на нього обробник події кліку.
-//  За кліком кнопка має викликати модальне вікно (alert) з текстом “Привіт тобі, клацальщик!”
+// Завдання: написати додаток “список справ”
 
-const button = document.querySelector('#btn');
+// Необхідний функціонал - форма вводу і кнопка, за натиснення на яку записаний 
+// у форму текст відображається елементом списку).
 
-button.addEventListener('click', function () {
-    alert('Привіт тобі, клацальщик!');
-})
+// Опціональний функціонал (завдання з зірочкою): кожен елемент має кнопку “видалення”,
+//  за натиснення на яку елемент списку видаляється і зникає.
 
+// Ця задача потребує мислення в першу чергу про дані (інформацію від користувача, яка має 
+//     десь зберігатись), і вже в другу чергу - про елементи, які рендеряться на екран. 
+//     Спробуйте в першу чергу спиратись на дані, а потім синхронізовувати їх і елементи на екрані.
 
-// 2. Створити посилання з текстом “клікни, аби з’явилась кнопка”. За натиснення на посилання
-//  поряд з ним має з’явитись новий елемент - кнопка.
-
-
-const linkEl = document.createElement('a');
-linkEl.id = 'link';
-linkEl.href = '#';
-linkEl.textContent = 'клікни, аби з’явилась кнопка';
-document.body.append(linkEl);
-
-linkEl.addEventListener('click', function () {
-    const funnyBtn = document.querySelector('#funny-btn');
-
-    if (funnyBtn) return;
-
-    const btnEl = document.createElement('button');
-    btnEl.id = 'funny-btn';
-    btnEl.textContent = 'Funny Button';
-    document.body.append(btnEl);
-
-})
+// Стилістично оформити власним за смаком.
 
 
-// 3. “Лампочка”. У розмітці прописати елемент (article або div), з початковими стилями, які 
-// роблять елемент круглим, сірого кольору тла, з темно-сірою рамкою. Також прописати в 
-// розмітці кнопку, за натиснення на яку у елемента-лампочки мають змінитись стилі - тло має 
-// стати жовтим, рамка - білою.
-
-const bulb = document.querySelector('#bulb');
-bulb.dataset.state = 'off';
-bulb.id = 'bulb';
+const saveBtn = document.querySelector('.save-btn');
+const inputContent = document.querySelector('#input');
 
 
-function toggleBulbHandler (e) {
-    const targetBtn = e.target.closest('#toggle-btn');
-
-    if (!targetBtn) return;
-
-    if(bulb.dataset.state === 'off') {
-        bulb.style.border = '2px solid white';
-        bulb.style.backgroundColor = 'yellow';
-        bulb.dataset.state = 'on' ;
-        targetBtn.textContent = 'Turn me off!';
-
-    } else {
-        bulb.style.border = '2px solid darkgrey';
-        bulb.style.backgroundColor = 'lightgrey';
-        bulb.dataset.state = 'off' ;
-        targetBtn.textContent = 'Turn me on!';
-
+saveBtn.addEventListener('click', function () {
+    
+    if(!inputContent || !inputContent.value.trim()) {
+        alert('Поле для вводу не може бути пустим!');
+        inputContent.value = '';
+        inputContent.focus();
+        return;
     }
+    
+    const listItemEl = createlistItem(inputContent.value);
+    listEl.prepend(listItemEl);
+})
+
+const listEl = document.createElement('ol');
+listEl.id = 'task-list';
+document.body.append(listEl);
+
+function listClickListener (e) {
+    const targetDeleteBtn = e.target.closest('.delete-btn');
+    const targetItem = e.target.closest('.list-item');
+    const targetItemText = targetItem.querySelector('.item-text')
+    
+    if (!targetItem) return;
+    
+    if (targetDeleteBtn) {
+        targetItem.remove();
+        inputContent.focus();
+        return;
+    }
+    
+    targetItemText.classList.toggle('done');
+    
+}
+
+listEl.addEventListener('click', listClickListener);
+
+
+function createlistItem (contentText) {
+    const listItemEl = document.createElement('li');
+    listItemEl.classList.add('list-item');
+    listEl.prepend(listItemEl);
+
+    const itemContentWrapper = document.createElement('div');
+    itemContentWrapper.classList.add('content-wrapper');
+    listItemEl.append(itemContentWrapper);
+
+
+    const itemTextEl = document.createElement('span');
+    itemTextEl.classList.add('item-text');
+    itemTextEl.textContent = contentText;
+
+
+    const deleteBtn = createDeleteBtn();
+    itemContentWrapper.append(itemTextEl, deleteBtn);
+
+    inputContent.value = '';
+    inputContent.focus();
+    
+    return listItemEl;
 
 }
 
-bulb.onclick = toggleBulbHandler;
+
+function createDeleteBtn() {
+    const deleteBtnEl = document.createElement('button');
+    deleteBtnEl.classList.add('delete-btn');
+    deleteBtnEl.textContent = 'Видалити';
+
+    return deleteBtnEl;
+}
+
