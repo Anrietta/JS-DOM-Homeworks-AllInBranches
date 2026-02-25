@@ -2,95 +2,154 @@
 // -------------------------------------------------------------------------------------------------------------------------------
 
 
-// 19. JS. DOM. TodoList
-
-// Завдання: написати додаток “список справ”
-
-// Необхідний функціонал - форма вводу і кнопка, за натиснення на яку записаний 
-// у форму текст відображається елементом списку).
-
-// Опціональний функціонал (завдання з зірочкою): кожен елемент має кнопку “видалення”,
-//  за натиснення на яку елемент списку видаляється і зникає.
-
-// Ця задача потребує мислення в першу чергу про дані (інформацію від користувача, яка має 
-//     десь зберігатись), і вже в другу чергу - про елементи, які рендеряться на екран. 
-//     Спробуйте в першу чергу спиратись на дані, а потім синхронізовувати їх і елементи на екрані.
-
-// Стилістично оформити власним за смаком.
+// 16. JS. Структури даних
 
 
-const saveBtn = document.querySelector('.save-btn');
-const inputContent = document.querySelector('#input');
+// 16.1 - Написати клас для реалізації структури даних Зв’язаний Список 
+// (LinkedList) (за прикладом ментора у відео-записах) та виконати на його 
+// основі наступну задачу:
+// - реалізувати у класа метод deleteItem(data), який приймає певне значення data 
+// і видаляє зі зв’язаного списка перший знайдений елемент з такими даними.
+// - реалізувати метод addNthElement(data, position), який приймає значення data 
+// і порядковий номер елемента position, після якого він має вставити новий вузел 
+// списку з такими самими даними
 
 
-saveBtn.addEventListener('click', function () {
-    
-    if(!inputContent || !inputContent.value.trim()) {
-        alert('Поле для вводу не може бути пустим!');
-        inputContent.value = '';
-        inputContent.focus();
-        return;
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
     }
-    
-    const listItemEl = createlistItem(inputContent.value);
-    listEl.prepend(listItemEl);
-})
+}
 
-const listEl = document.createElement('ol');
-listEl.id = 'task-list';
-document.body.append(listEl);
-
-function listClickListener (e) {
-    const targetDeleteBtn = e.target.closest('.delete-btn');
-    const targetItem = e.target.closest('.list-item');
-    const targetItemText = targetItem.querySelector('.item-text')
-    
-    if (!targetItem) return;
-    
-    if (targetDeleteBtn) {
-        targetItem.remove();
-        inputContent.focus();
-        return;
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
     }
-    
-    targetItemText.classList.toggle('done');
-    
+
+    appendItem(data) {
+
+        const newNode = new Node(data);
+
+        if (this.size === 0) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+        this.size++;
+    }
+
+    // appendItem(data) {
+    //     const newNode = new Node(data);
+    //     if (this.size === 0) {
+    //         this.head = newNode;
+    //     } else {
+    //         let curr = this.head;
+    //         while (curr.next) {
+    //             curr = curr.next;
+    //         }
+    //         curr.next = newNode;
+    //     }
+    //     this.size++;
+    // }
+
+    deleteItem(data) {
+        if (this.size === 0) return;
+
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return;
+        }
+
+        let curr = this.head;
+        while(curr.next && curr.next.data !== data) {
+            curr = curr.next;
+        }
+        
+        if(curr.next) {
+            curr.next = curr.next.next
+        }
+        this.size--;
+    }
+
+    addNthItem(data, position = null) {
+
+        if(position === null || position < 0 || position > this.size) return;
+
+        const newNode = new Node(data);
+
+        if (position === 0) {
+            newNode.next = this.head;
+            this.head = newNode;
+            this.size++
+            return;
+        }
+
+        let current = this.head;
+        let index = 0;
+
+        while(current && index < position) {
+            current = current.next;
+            index++;
+        }
+
+        if (current) {
+            newNode.next = current.next;
+            current.next = newNode;
+            this.size++;
+        }
+
+    }
+
+    clearList() {
+        this.head = null;
+        this.size = 0;
+    }
+
+    printList() {
+        let curr = this.head;
+        let list = 'START -> ';
+
+        while(curr) {
+            list += curr.data + ' -> ';
+            curr = curr.next;
+        }
+
+        console.log(this.size === 0 ?'The List is empty': list + 'END.');
+
+    }
 }
 
-listEl.addEventListener('click', listClickListener);
+const newList = new LinkedList();
+
+newList.appendItem(1);
+newList.appendItem(2);
+newList.appendItem(3);
+
+newList.printList();
+
+newList.addNthItem(4, 0);
+newList.printList();
+newList.addNthItem(5, 1);
+newList.printList();
+newList.addNthItem(6, 6);
+newList.printList();
+
+newList.addNthItem(18);
+newList.printList();
+
+newList.appendItem(6)
+newList.printList();
+
+newList.deleteItem(1);
+newList.printList();
+
+newList.clearList();
+newList.printList();
 
 
-function createlistItem (contentText) {
-    const listItemEl = document.createElement('li');
-    listItemEl.classList.add('list-item');
-    listEl.prepend(listItemEl);
-
-    const itemContentWrapper = document.createElement('div');
-    itemContentWrapper.classList.add('content-wrapper');
-    listItemEl.append(itemContentWrapper);
-
-
-    const itemTextEl = document.createElement('span');
-    itemTextEl.classList.add('item-text');
-    itemTextEl.textContent = contentText;
-
-
-    const deleteBtn = createDeleteBtn();
-    itemContentWrapper.append(itemTextEl, deleteBtn);
-
-    inputContent.value = '';
-    inputContent.focus();
-    
-    return listItemEl;
-
-}
-
-
-function createDeleteBtn() {
-    const deleteBtnEl = document.createElement('button');
-    deleteBtnEl.classList.add('delete-btn');
-    deleteBtnEl.textContent = 'Видалити';
-
-    return deleteBtnEl;
-}
 
