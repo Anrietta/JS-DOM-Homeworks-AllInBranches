@@ -178,6 +178,24 @@ class MyDataStructure {
         this.size = 0;
     }
 
+    // із завдання #3
+    [Symbol.iterator] () {
+        let index = 1;
+        return {
+            next: () => {
+                if (index <= this.size) {
+                    const key = `*${index}*`;
+                    const value = this.storage[key];
+                    index++;
+
+                    return { value: [key, value], done: false};
+                } else {
+                    return {done: true};
+                }
+            }
+        }
+    }
+
     // метод для генерації нумер ключів
     generateKeys() {;
 
@@ -224,7 +242,9 @@ class MyDataStructure {
 
     // метод щоб вивести обєкт
     printStorage() {
-        console.log(this.storage);
+        for (const [key, value] of this) {
+            console.log(key + ' : ' + value);
+        }
     }
 
     // метод для очищення всього обєкта
@@ -252,3 +272,13 @@ myStorage.printStorage();
 
 myStorage.clearStorage();
 myStorage.printStorage();
+
+console.log(myStorage[Symbol.iterator]());
+
+
+
+
+
+
+
+// 16.3*. До колекції з завдання №2 написати метод [Symbol.iterator], який реалізує принцип обходу колекції
