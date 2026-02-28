@@ -172,109 +172,108 @@
 // доступ до ключів через obj["*1*"]
 
 
-class MyDataStructure {
-    constructor() {
-        this.storage = {};
-        this.size = 0;
-    }
+// class MyDataStructure {
+//     constructor() {
+//         this.storage = {};
+//         this.size = 0;
+//     }
 
-    // із завдання #3
-    [Symbol.iterator] () {
-        let index = 1;
-        return {
-            next: () => {
-                if (index <= this.size) {
-                    const key = `*${index}*`;
-                    const value = this.storage[key];
-                    index++;
+//     // із завдання #3
+//     [Symbol.iterator] () {
+//         let index = 1;
+//         return {
+//             next: () => {
+//                 if (index <= this.size) {
+//                     const key = `*${index}*`;
+//                     const value = this.storage[key];
+//                     index++;
 
-                    return { value: [key, value], done: false};
-                } else {
-                    return {done: true};
-                }
-            }
-        }
-    }
+//                     return { value: [key, value], done: false};
+//                 } else {
+//                     return {done: true};
+//                 }
+//             }
+//         }
+//     }
 
-    // метод для генерації нумер ключів
-    generateKeys() {;
+//     // метод для генерації нумер ключів
+//     generateKeys() {;
 
-        return `*${this.size + 1}*`;
-    }
+//         return `*${this.size + 1}*`;
+//     }
 
-    // метод щоб згенерувати нову нумерацію (після видалення елемента щоб не лишалось дірок в номерах 
-    // і щоб додавання нового елемента не затирало існуючий номерок) - після видалення елем #2 з 3 наявних,
-    //  якщо я додаю новий елем то його порядковий номер буде 3(this.size + 1), а ключ №3 існує вже - 
-    // то value просто перезаписується в цю пару (ще й лічильник збільшується)
-    // щоб цього не було, я перенумерую всі елементи після кожного видалення)))
-    regenerateNumeration() {
-        const arrayFromStorage = Object.values(this.storage);
-        this.storage = {};
-        this.size = 0;
-        arrayFromStorage.forEach(item => this.addItem(item));
+//     // метод щоб згенерувати нову нумерацію (після видалення елемента щоб не лишалось дірок в номерах 
+//     // і щоб додавання нового елемента не затирало існуючий номерок) - після видалення елем #2 з 3 наявних,
+//     //  якщо я додаю новий елем то його порядковий номер буде 3(this.size + 1), а ключ №3 існує вже - 
+//     // то value просто перезаписується в цю пару (ще й лічильник збільшується)
+//     // щоб цього не було, я перенумерую всі елементи після кожного видалення)))
+//     regenerateNumeration() {
+//         const arrayFromStorage = Object.values(this.storage);
+//         this.storage = {};
+//         this.size = 0;
+//         arrayFromStorage.forEach(item => this.addItem(item));
 
-    }
+//     }
 
-    // метод додавання нового елем
-    addItem(value) {
-        let index = this.generateKeys();
+//     // метод додавання нового елем
+//     addItem(value) {
+//         let index = this.generateKeys();
 
-        if (!index || !value) return;
+//         if (!index || !value) return;
 
-        this.storage[index] = value;
-        this.size++;
+//         this.storage[index] = value;
+//         this.size++;
 
-    }
+//     }
 
-    //метод видалення елем(за знач)
-    deleteItem(value) {
-        if (this.size === 0) return;
+//     //метод видалення елем(за знач)
+//     deleteItem(value) {
+//         if (this.size === 0) return;
 
-        let keyToDelete = Object.keys(this.storage).find(key => this.storage[key] === value);
+//         let keyToDelete = Object.keys(this.storage).find(key => this.storage[key] === value);
 
-        if (!keyToDelete) return;
+//         if (!keyToDelete) return;
 
-        delete this.storage[keyToDelete];
-        this.size--;
+//         delete this.storage[keyToDelete];
+//         this.size--;
 
-        this.regenerateNumeration();
-    }
+//         this.regenerateNumeration();
+//     }
 
-    // метод щоб вивести обєкт
-    printStorage() {
-        for (const [key, value] of this) {
-            console.log(key + ' : ' + value);
-        }
-    }
+//     // метод щоб вивести обєкт
+//     printStorage() {
+//         for (const [key, value] of this) {
+//             console.log(key + ' : ' + value);
+//         }
+//     }
 
-    // метод для очищення всього обєкта
-    clearStorage() {
-        this.storage = {};
-        this.size = 0;
-    }
-}
+//     // метод для очищення всього обєкта
+//     clearStorage() {
+//         this.storage = {};
+//         this.size = 0;
+//     }
+// }
 
-const myStorage = new MyDataStructure();
+// const myStorage = new MyDataStructure();
 
-myStorage.addItem('first value');
-myStorage.addItem('second value');
-myStorage.addItem('third value');
-myStorage.printStorage();
+// myStorage.addItem('first value');
+// myStorage.addItem('second value');
+// myStorage.addItem('third value');
+// myStorage.printStorage();
 
-myStorage.deleteItem('nonexistent value');
-myStorage.deleteItem('second value');
-myStorage.printStorage();
+// myStorage.deleteItem('nonexistent value');
+// myStorage.deleteItem('second value');
+// myStorage.printStorage();
 
-myStorage.addItem('fourth value')
-myStorage.addItem('fifth value')
+// myStorage.addItem('fourth value')
+// myStorage.addItem('fifth value')
 
-myStorage.printStorage();
+// myStorage.printStorage();
 
-myStorage.clearStorage();
-myStorage.printStorage();
+// myStorage.clearStorage();
+// myStorage.printStorage();
 
-console.log(myStorage[Symbol.iterator]());
-
+// console.log(myStorage[Symbol.iterator]());
 
 
 
@@ -282,3 +281,95 @@ console.log(myStorage[Symbol.iterator]());
 
 
 // 16.3*. До колекції з завдання №2 написати метод [Symbol.iterator], який реалізує принцип обходу колекції
+
+// рішення в попередньому завданні!!!
+
+
+
+
+// 16.4   Задача про парні дужки.
+// Написати функцію, яка приймає вираз, що містить дужки різних типів - (), [], {}, <>, і перевіряє, 
+// чи правильно вони відкриваються і закриваються.
+// checkSequence(‘()(([]))’) // true
+// checkSequence(‘{][)’) // false
+// Підказка: для реалізації використовуйте структуру Stack
+// (Зображення - підказка для реалізації)
+// Для початку зробіть функцію, яка підтримує хоча б один вид дужок, потім ускладніть її,
+//  в ідеалі - зробіть налаштовуваною, тобто щоб вона приймала як параметри пару дужок, 
+//  на яку треба перевіряти
+
+
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class Stack {
+    constructor() {
+        this.top = null;
+        this.size = 0;
+    }
+
+    push(data) {
+        const newNode  = new Node(data);
+
+        newNode.next = this.top;
+        this.top = newNode;
+        this.size++;
+    }
+
+    pop() {
+        if (!this.top) return null;
+
+        const curr = this.top.data;
+
+        this.top = this.top.next;
+        this.size--;
+
+        return curr;
+    }
+}
+
+
+function isBracketsPaired(str, config = {'(':')', '{':'}', '[':']',}) {  
+
+    if (!str || typeof str[Symbol.iterator] !== 'function') {
+        console.error(str, "Об'єкт не ітерований!");
+        return false;
+    }
+    
+    const newStack = new Stack();
+
+    for (let char of str) {
+        if (Object.keys(config).includes(char)) {
+            newStack.push(char);
+            continue;
+        } 
+        
+        if(Object.values(config).includes(char)) {
+            let lastOpening = newStack.pop();
+
+            if (lastOpening === null) return false;
+
+            if (config[lastOpening] !== char) {
+                return false;
+            }
+
+        }
+    };
+
+    return newStack.size === 0;
+}
+
+console.log(isBracketsPaired('()()', {}));
+console.log(isBracketsPaired('()(([]))'));
+console.log(isBracketsPaired('()('));
+console.log(isBracketsPaired(')('));
+console.log(isBracketsPaired('{][)'));
+console.log(isBracketsPaired('{][}'));
+console.log(isBracketsPaired("adc"));
+console.log(isBracketsPaired(['(', '}']));
+console.log(isBracketsPaired({'(': '}'}));
+console.log(isBracketsPaired([]));
