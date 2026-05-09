@@ -33,6 +33,8 @@ saveBtn.addEventListener('click', function () {
     }
     
     const listItemEl = createlistItem(inputContent.value);
+    inputContent.value = '';
+    inputContent.focus();
     listEl.prepend(listItemEl);
 })
 
@@ -77,9 +79,6 @@ function createlistItem (contentText) {
 
     const deleteBtn = createDeleteBtn();
     itemContentWrapper.append(itemTextEl, deleteBtn);
-
-    inputContent.value = '';
-    inputContent.focus();
     
     return listItemEl;
 
