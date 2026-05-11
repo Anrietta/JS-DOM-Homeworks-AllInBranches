@@ -22,6 +22,7 @@
 const saveBtn = document.querySelector('.save-btn');
 const inputContent = document.querySelector('#input');
 
+const listEl = document.querySelector('#task-list');
 
 saveBtn.addEventListener('click', function () {
     
@@ -38,44 +39,20 @@ saveBtn.addEventListener('click', function () {
     listEl.prepend(listItemEl);
 })
 
-const listEl = document.createElement('ol');
-listEl.id = 'task-list';
-document.body.append(listEl);
-
-function listClickListener (e) {
-    const targetDeleteBtn = e.target.closest('.delete-btn');
-    const targetItem = e.target.closest('.list-item');
-    const targetItemText = targetItem.querySelector('.item-text')
-    
-    if (!targetItem) return;
-    
-    if (targetDeleteBtn) {
-        targetItem.remove();
-        inputContent.focus();
-        return;
-    }
-    
-    targetItemText.classList.toggle('done');
-    
-}
-
-listEl.addEventListener('click', listClickListener);
-
-
 function createlistItem (contentText) {
     const listItemEl = document.createElement('li');
     listItemEl.classList.add('list-item');
     listEl.prepend(listItemEl);
 
+    listItemEl.addEventListener('click', listItemClickHandler);
+
     const itemContentWrapper = document.createElement('div');
     itemContentWrapper.classList.add('content-wrapper');
     listItemEl.append(itemContentWrapper);
 
-
     const itemTextEl = document.createElement('span');
     itemTextEl.classList.add('item-text');
     itemTextEl.textContent = contentText;
-
 
     const deleteBtn = createDeleteBtn();
     itemContentWrapper.append(itemTextEl, deleteBtn);
@@ -84,12 +61,29 @@ function createlistItem (contentText) {
 
 }
 
+function listItemClickHandler(e) {
+
+    if (e.target.closest('.list-item') && !e.target.closest('.delete-btn')) {
+        const itemText = e.currentTarget.querySelector('.item-text');
+        if (itemText) {
+            itemText.classList.toggle('done');
+        }
+    };
+}
 
 function createDeleteBtn() {
     const deleteBtnEl = document.createElement('button');
     deleteBtnEl.classList.add('delete-btn');
     deleteBtnEl.textContent = 'Видалити';
 
+    deleteBtnEl.addEventListener('click', deleteBtnClickListener);
+
     return deleteBtnEl;
+}
+
+function deleteBtnClickListener (e) {
+    e.stopPropagation();
+    e.target.closest('.list-item').remove();
+    inputContent.focus();
 }
 
