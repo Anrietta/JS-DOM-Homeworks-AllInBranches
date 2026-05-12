@@ -1,4 +1,15 @@
 
+// ---------------------------------------------------------------------------------------------------------------------------------------------
+
+//  для тестування такої структури зручно притримуватися наступної стратегії:
+// 1. тестувати послідовно кожен метод.
+// 2. в кожному методі визначити всі можливі тестові випадки і покрити їх тестами (наприклад, для додавання 
+//     елемента перевірити додавання в порожній список, додавання в початок, додавання в хвост, додавання в 
+//     середину. По суті, це аналогічно покриття тестами всіх гілок коду при розгалуження).
+// 3. при тестуванні звіряти фактично отриманий результат і очікуваний, при чому перевіряти саме через console.log,
+//  а не printList, оскільки так буде видно саме внутрішню структуру об'єкта (size тощо).
+
+
 // -------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -15,116 +26,176 @@
 // списку з такими самими даними
 
 
-// class Node {
-//     constructor(data) {
-//         this.data = data;
-//         this.next = null;
-//     }
-// }
+class Node {
+    constructor(data) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-// class LinkedList {
-//     constructor() {
-//         this.head = null;
-//         this.tail = null;
-//         this.size = 0;
-//     }
+class LinkedList {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
 
-//     appendItem(data) {
+    appendItem(data) {
 
-//         const newNode = new Node(data);
+        const newNode = new Node(data);
 
-//         if (this.size === 0) {
-//             this.head = newNode;
-//             this.tail = newNode;
-//         } else {
-//             this.tail.next = newNode;
-//             this.tail = newNode;
-//         }
-//         this.size++;
-//     }
+        if (this.size === 0) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+        this.size++;
+    }
 
-//     // appendItem(data) {
-//     //     const newNode = new Node(data);
-//     //     if (this.size === 0) {
-//     //         this.head = newNode;
-//     //     } else {
-//     //         let curr = this.head;
-//     //         while (curr.next) {
-//     //             curr = curr.next;
-//     //         }
-//     //         curr.next = newNode;
-//     //     }
-//     //     this.size++;
-//     // }
+    // appendItem(data) {
+    //     const newNode = new Node(data);
+    //     if (this.size === 0) {
+    //         this.head = newNode;
+    //     } else {
+    //         let curr = this.head;
+    //         while (curr.next) {
+    //             curr = curr.next;
+    //         }
+    //         curr.next = newNode;
+    //     }
+    //     this.size++;
+    // }
 
-//     deleteItem(data) {
-//         if (this.size === 0) return;
+    deleteItem(data) {
+        // debugger;
+        if (this.size === 0) return;
 
-//         if (this.head.data === data) {
-//             this.head = this.head.next;
-//             return;
-//         }
+        if (this.head.data === data && this.size === 1) {
+            this.head = null;
+            this.tail = null;
+            this.size--;
+            return;
+        }
 
-//         let curr = this.head;
-//         while(curr.next && curr.next.data !== data) {
-//             curr = curr.next;
-//         }
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            this.size--;
+            return;
+        }
+
+        let curr = this.head;
+        while(curr.next && curr.next.data !== data) {
+            curr = curr.next;
+        }
         
-//         if(curr.next) {
-//             curr.next = curr.next.next
-//         }
-//         this.size--;
-//     }
+        if(curr.next) {
+            curr.next = curr.next.next; 
+            if (this.tail.data === data) {
+                this.tail = curr;
+            }
+            // curr.next.next це null (while зупинився на передостанньому вузлі, 
+            // і я його перекинула на next останнього вузла)
+            this.size--;
+        }
+    }
 
-//     addNthItem(data, position = null) {
+    addNthItem(data, position = null) {
 
-//         if(position === null || position < 0 || position > this.size) return;
+        if(position === null || position < 0 || position > this.size) return;
 
-//         const newNode = new Node(data);
+        const newNode = new Node(data);
 
-//         if (position === 0) {
-//             newNode.next = this.head;
-//             this.head = newNode;
-//             this.size++
-//             return;
-//         }
+        if (position === 0) {
+            newNode.next = this.head;
+            this.head = newNode;
+            this.size++
+            return;
+        }
 
-//         let current = this.head;
-//         let index = 0;
+        let current = this.head;
+        let index = 0;
 
-//         while(current && index < position) {
-//             current = current.next;
-//             index++;
-//         }
+        while(current && index < position) {
+            current = current.next;
+            index++;
+        }
 
-//         if (current) {
-//             newNode.next = current.next;
-//             current.next = newNode;
-//             this.size++;
-//         }
+        if (current) {
+            newNode.next = current.next;
+            current.next = newNode;
+            this.size++;
+        }
 
-//     }
+    }
 
-//     clearList() {
-//         this.head = null;
-//         this.size = 0;
-//     }
+    clearList() {
+        this.head = null;
+        this.size = 0;
+    }
 
-//     printList() {
-//         let curr = this.head;
-//         let list = 'START -> ';
+    printList() {
+        let curr = this.head;
+        let list = 'START -> ';
 
-//         while(curr) {
-//             list += curr.data + ' -> ';
-//             curr = curr.next;
-//         }
+        while(curr) {
+            list += curr.data + ' -> ';
+            curr = curr.next;
+        }
 
-//         console.log(this.size === 0 ?'The List is empty': list + 'END.');
+        console.log(this.size === 0 ?'The List is empty': list + 'END.');
 
-//     }
-// }
+    }
+}
 
-// const newList = new LinkedList();
+const newList = new LinkedList();
+
+// test 1 (після очищення з методом deleteItem не виводиться The List is empty і не обнуляється список, також не змінюється tail):
+// newList.appendItem(1);
+// newList.appendItem(2);
+// newList.appendItem(3);
+// newList.appendItem(4);
+// newList.appendItem(5);
+// console.log(newList);
+// newList.printList();
+
+// newList.deleteItem(2);
+// console.log(newList);
+// newList.deleteItem(5);
+// console.log(newList);
+// newList.printList();
+
+// test 2 (видалення неіснуючого числа зменшує size списку при цьому не чіпаючи вузли, коли size === 0 виводиться The List is empty
+// відповідно коли size === 0 при спробі виконати deleteItem(існуючий value) метод не працює бо вважає список пустим при тому що він не пустий):
+// newList.appendItem(1);
+// newList.appendItem(2);
+// newList.printList()
+// console.log(newList);
+
+// newList.deleteItem(5);
+// console.log(newList);
+// newList.printList();
+// newList.deleteItem(5);
+// console.log(newList);
+// newList.printList();
+// newList.deleteItem(1);
+// console.log(newList);
+// newList.printList();
+// newList.deleteItem(2);
+// console.log(newList);
+// newList.printList();
+
+
+// other tests :
+// newList.appendItem(2);
+// console.log(newList);
+// newList.printList();
+
+// newList.deleteItem(1);
+// console.log(newList);
+// // newList.deleteItem(2);
+// newList.printList();
 
 // newList.appendItem(1);
 // newList.appendItem(2);
@@ -134,6 +205,7 @@
 
 // newList.addNthItem(4, 0);
 // newList.printList();
+// console.log(newList);
 // newList.addNthItem(5, 1);
 // newList.printList();
 // newList.addNthItem(6, 6);
@@ -299,77 +371,77 @@
 //  на яку треба перевіряти
 
 
-class Node {
-    constructor(data) {
-        this.data = data;
-        this.next = null;
-    }
-}
+// class Node {
+//     constructor(data) {
+//         this.data = data;
+//         this.next = null;
+//     }
+// }
 
-class Stack {
-    constructor() {
-        this.top = null;
-        this.size = 0;
-    }
+// class Stack {
+//     constructor() {
+//         this.top = null;
+//         this.size = 0;
+//     }
 
-    push(data) {
-        const newNode  = new Node(data);
+//     push(data) {
+//         const newNode  = new Node(data);
 
-        newNode.next = this.top;
-        this.top = newNode;
-        this.size++;
-    }
+//         newNode.next = this.top;
+//         this.top = newNode;
+//         this.size++;
+//     }
 
-    pop() {
-        if (!this.top) return null;
+//     pop() {
+//         if (!this.top) return null;
 
-        const curr = this.top.data;
+//         const curr = this.top.data;
 
-        this.top = this.top.next;
-        this.size--;
+//         this.top = this.top.next;
+//         this.size--;
 
-        return curr;
-    }
-}
+//         return curr;
+//     }
+// }
 
 
-function isBracketsPaired(str, config = {'(':')', '{':'}', '[':']',}) {  
+// function isBracketsPaired(str, config = {'(':')', '{':'}', '[':']',}) {  
 
-    if (!str || typeof str[Symbol.iterator] !== 'function') {
-        console.error(str, "Об'єкт не ітерований!");
-        return false;
-    }
+//     if (!str || typeof str[Symbol.iterator] !== 'function') {
+//         console.error(str, "Об'єкт не ітерований!");
+//         return false;
+//     }
     
-    const newStack = new Stack();
+//     const newStack = new Stack();
 
-    for (let char of str) {
-        if (Object.keys(config).includes(char)) {
-            newStack.push(char);
-            continue;
-        } 
+//     for (let char of str) {
+//         if (Object.keys(config).includes(char)) {
+//             newStack.push(char);
+//             continue;
+//         } 
         
-        if(Object.values(config).includes(char)) {
-            let lastOpening = newStack.pop();
+//         if(Object.values(config).includes(char)) {
+//             let lastOpening = newStack.pop();
 
-            if (lastOpening === null) return false;
+//             if (lastOpening === null) return false;
 
-            if (config[lastOpening] !== char) {
-                return false;
-            }
+//             if (config[lastOpening] !== char) {
+//                 return false;
+//             }
 
-        }
-    };
+//         }
+//     };
 
-    return newStack.size === 0;
-}
+//     return newStack.size === 0;
+// }
 
-console.log(isBracketsPaired('()()', {}));
-console.log(isBracketsPaired('()(([]))'));
-console.log(isBracketsPaired('()('));
-console.log(isBracketsPaired(')('));
-console.log(isBracketsPaired('{][)'));
-console.log(isBracketsPaired('{][}'));
-console.log(isBracketsPaired("adc"));
-console.log(isBracketsPaired(['(', '}']));
-console.log(isBracketsPaired({'(': '}'}));
-console.log(isBracketsPaired([]));
+// console.log(isBracketsPaired('()()', {}));
+// console.log(isBracketsPaired('()(([]))'));
+// console.log(isBracketsPaired('()('));
+// console.log(isBracketsPaired(')('));
+// console.log(isBracketsPaired('{][)'));
+// console.log(isBracketsPaired('{][}'));
+// console.log(isBracketsPaired("adc"));
+// console.log(isBracketsPaired(['(', '}']));
+// console.log(isBracketsPaired({'(': '}'}));
+// console.log(isBracketsPaired([]));
